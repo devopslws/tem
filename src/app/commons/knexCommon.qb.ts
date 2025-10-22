@@ -1,12 +1,13 @@
 import { Knex } from 'knex';
-import { BadRequestException, Inject } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 
-export abstract class knexCommonBuilder {
-    //Injection은 좀 이따가 일단 구조부터
+//1. repo계층에서 반복적인 예외처리를 감춘다.
+//2. IDE타입 추론의 취약점인 경계 지점에서 타입확정 가능 하도록 보장
+export abstract class KnexCommonBuilder {
+    //QB끼리 의존하는 경우는 없으니 괜찮을듯?
     constructor(@Inject('knex') protected readonly knex: Knex) {}
 
-    //1. repo계층에서 반복적인 예외처리를 감춘다.
-    //2. IDE타입 추론의 취약점인 경계 지점에서 타입확정 가능 하도록 보장
+    /** 값 있는지 확인 */
     protected checkSingleResult <T>(result: T | undefined, keyword?: string):T {
         if (result !== undefined && result !== null) {
             return result;

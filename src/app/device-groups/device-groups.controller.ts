@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { DeviceGroupsService } from './device-groups.service';
-import { CreateDeviceGroupDto } from './model/create-device.dto';
+import { CreateDeviceGroupReqDto } from './model/createDeviceGroup.req.dto';
+import { CreateDeviceGroupResDto } from './model/createDeviceGroup.res.dto';
 
 @Controller('deviceGroups')
 export class DeviceGroupsController {
@@ -11,7 +12,12 @@ export class DeviceGroupsController {
     }
 
     @Post('/registerDeviceGroup')
-    registerDeviceGroup(@Body() createDeviceDto: CreateDeviceGroupDto) {
-      return this.deviceGroupsService.registerDeviceGroup(createDeviceDto.deviceGroupSerial);
+    async registerDeviceGroup(@Body() createDeviceDto: CreateDeviceGroupReqDto): Promise<CreateDeviceGroupResDto> {
+      return await this.deviceGroupsService.registerDeviceGroup(createDeviceDto.deviceGroupSerial);
+    }
+
+    @Get('/getAverageStatisticsByDuration')
+    async getAverageStatisticsByDuration(@Param('id') deviceCode: string) {
+      return await this.deviceGroupsService.getAverageStatisticsByDuration(deviceCode);
     }
 }

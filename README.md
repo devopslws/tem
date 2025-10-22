@@ -4,6 +4,7 @@
       - user: root
       - pw: temp00!
       - dbName: temperature [CREATE DATABASE temperature;]
+      - db시간 세팅: [SET GLOBAL time_zone = '+09:00;]
 
 1. 위 환경을 로컬 환경에 구축 해주세요
 2. 프로젝트를 checkout 후, 해당 디렉토리의 터미널을 오픈 npm install으로 패키지를 받아주세요

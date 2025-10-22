@@ -1,34 +1,27 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { DevicesService } from './devices.service';
-import { CreateDeviceDto } from './model/create-device.dto';
-import { UpdateDeviceDto } from './model/update-device.dto';
+import { RegisterOneReqDto } from './model/registerOne.req.dto';
+import { InsertTemperatureValueReqDto } from './model/insertTemperatureValue.req.dto';
+
 
 @Controller('devices')
 export class DevicesController {
   constructor(private readonly devicesService: DevicesService) {}
 
-  @Post()
-  create(@Body() createDeviceDto: CreateDeviceDto) {
-    return this.devicesService.create(createDeviceDto);
+  @Post('/registerOne')
+  registerOne(@Body() registerOneReqDto: RegisterOneReqDto) {
+    return this.devicesService.registerOne(registerOneReqDto);
   }
 
-  @Get()
-  findAll() {
-    return this.devicesService.findAll();
+  @Post('/insertTemperatureValue')
+  insertTemperatureValue(@Body() insertTemperatureValueReqDto: InsertTemperatureValueReqDto): Promise<null> {
+    //특이하게 response값이 없다. null이 반환되면 filter에서 data부분을 지우고 내보내도록 추가 하자(message만)
+    return this.devicesService.insertTemperatureValue(insertTemperatureValueReqDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.devicesService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDeviceDto: UpdateDeviceDto) {
-    return this.devicesService.update(+id, updateDeviceDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.devicesService.remove(+id);
+  @Get('/getAverageTemperature')
+  getAverageTemperature(@Param('id') deviceCode: string) {
+    //get과 post 모두 object형식으로 통일 시켜주는 커스텀 기능 만들자. 이름은 @ReqDto
+    return this.devicesService.getAverageTemperature(deviceCode);
   }
 }

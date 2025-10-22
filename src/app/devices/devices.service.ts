@@ -1,26 +1,58 @@
-import { Injectable } from '@nestjs/common';
-import { CreateDeviceDto } from './model/create-device.dto';
-import { UpdateDeviceDto } from './model/update-device.dto';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { DevicesQb } from './devices.qb';
+import { DeviceGroupsQb } from '../device-groups/device-groups.qb';
+import { RegisterOneReqDto } from './model/registerOne.req.dto';
+import { RegisterOneResDto } from './model/registerOne.res.dto';
+import { InsertTemperatureValueReqDto } from './model/insertTemperatureValue.req.dto';
+import * as mathCommon from '../commons/mathCommon';
+import { DeviceLogsEntity } from './model/deviceLogs.entity';
 
 @Injectable()
 export class DevicesService {
-  create(createDeviceDto: CreateDeviceDto) {
-    return 'This action adds a new device';
+  constructor(
+    private readonly devicesQb: DevicesQb,
+    private readonly deviceGroupsQb: DeviceGroupsQb,
+  ) {}
+
+  /** 장비 등록 */
+  async registerOne(registerOneReqDto: RegisterOneReqDto) {
+    let registerOneResDto = new RegisterOneResDto();
+
+    if (!await this.deviceGroupsQb.checkIsExistBySerialNumber(registerOneReqDto.deviceGroupSerial)) {
+      throw new BadRequestException(`${registerOneReqDto.deviceGroupSerial}는 없는 그룹S/N 입니다`);
+    } else {
+      const result = await this.devicesQb.registerOne(registerOneReqDto.serialNumber);
+      if (result.length == 0) {
+        throw new BadRequestException('이미 등록된 S/N입니다');
+      }
+      registerOneResDto.deviceGroup = await this.deviceGroupsQb.getDeviceGroupRowBySerialNumber(registerOneReqDto.deviceGroupSerial);
+      Object.assign(registerOneResDto, await this.devicesQb.getDeviceRowBySerialNumber(registerOneReqDto.serialNumber))
+    }
+    
+    return registerOneResDto;
   }
 
-  findAll() {
-    return `This action returns all devices`;
+  /** 등록 장비에 온도 데이터 받아서 multiInsert */
+  async insertTemperatureValue(insertTemperatureValueReqDto: InsertTemperatureValueReqDto): Promise<null> {
+    const serialNumber = insertTemperatureValueReqDto.sereaiNumber;
+    const registeredAt = insertTemperatureValueReqDto.registeredAt;
+    const interval = insertTemperatureValueReqDto.interval;
+    let bulkDao = new Array<DeviceLogsEntity>();
+    const smallIntArr: number[] = mathCommon.hexToSignedInt16(insertTemperatureValueReqDto.temperatures);
+    smallIntArr.forEach((element, idx) => {
+      const row = new DeviceLogsEntity();
+      row.deviceId = serialNumber;
+      row.temperature = element;
+      row.registeredAt = new Date(registeredAt.getTime() + (interval*(idx) * 1000));
+      bulkDao.push(row)
+    });
+    await this.devicesQb.insertTemperatureBulkValue(bulkDao);
+    //누락이 아닌 의도적인 null 반환임을 알기 위해 return null을 추가 시키자(문서의 res타입에 data가 없음)
+    return null;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} device`;
+  async getAverageTemperature(deviceCode: string) {
+    return this.devicesQb.getAverageTemperature(deviceCode);
   }
 
-  update(id: number, updateDeviceDto: UpdateDeviceDto) {
-    return `This action updates a #${id} device`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} device`;
-  }
 }
