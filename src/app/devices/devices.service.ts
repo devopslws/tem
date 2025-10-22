@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { CreateDeviceDto } from './dto/create-device.dto';
-import { UpdateDeviceDto } from './dto/update-device.dto';
+import { CreateDeviceDto } from './model/create-device.dto';
+import { UpdateDeviceDto } from './model/update-device.dto';
 
 @Injectable()
 export class DevicesService {

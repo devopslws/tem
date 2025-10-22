@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { DeviceGroupsService } from './device-groups.service';
-import { CreateDeviceGroupDto } from './dto/create-device.dto';
+import { CreateDeviceGroupDto } from './model/create-device.dto';
 
 @Controller('deviceGroups')
 export class DeviceGroupsController {
@@ -12,6 +12,6 @@ export class DeviceGroupsController {
 
     @Post('/registerDeviceGroup')
     registerDeviceGroup(@Body() createDeviceDto: CreateDeviceGroupDto) {
-      return this.deviceGroupsService.registerDeviceGroup(createDeviceDto);
+      return this.deviceGroupsService.registerDeviceGroup(createDeviceDto.deviceGroupSerial);
     }
 }
