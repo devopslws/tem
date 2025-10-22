@@ -24,10 +24,14 @@ export class DevicesQb extends KnexCommonBuilder{
             return result
   }
 
-  async insertTemperatureBulkValue(bulkDao: DeviceLogsEntity[]) {
+
+  async insertTemperatureValue(bulkDao: DeviceLogsEntity[] | DeviceLogsEntity) {
     //중복 입력을 방지할 수 있을까? 어디서 어디 까지를 중복으로 봐야 할까? 장비코드 + 시간?
+    const result = await this.knex<DeviceLogsEntity>('deviceLog').insert(bulkDao)
     return `This action returns all devices`;
   }
+
+
 
   async getAverageTemperature(deviceCode: string) {
     return `This action returns a #${deviceCode} device`;

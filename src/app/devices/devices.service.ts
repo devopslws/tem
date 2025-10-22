@@ -46,7 +46,7 @@ export class DevicesService {
       row.registeredAt = new Date(registeredAt.getTime() + (interval*(idx) * 1000));
       bulkDao.push(row)
     });
-    await this.devicesQb.insertTemperatureBulkValue(bulkDao);
+    await this.devicesQb.insertTemperatureValue(bulkDao);
     //누락이 아닌 의도적인 null 반환임을 알기 위해 return null을 추가 시키자(문서의 res타입에 data가 없음)
     return null;
   }
