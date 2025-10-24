@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, Length } from "class-validator";
+import { IsNotEmpty, IsString, Length } from "class-validator";
 
 export class CreateDeviceGroupReqDto {
     //정해진 서식 없으니 isNull만 검사 하고 끝내자
@@ -12,5 +12,6 @@ export class CreateDeviceGroupReqDto {
     })
     @IsString({ message: 'deviceGroupSerial은 문자열이어야 합니다.' })
     @Length(2, 12, { message: 'deviceGroupSerial은 2~12자여야 합니다.' })
+    @IsNotEmpty()
     deviceGroupSerial: string;
 }

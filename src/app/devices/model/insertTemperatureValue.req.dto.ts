@@ -1,12 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsString, Matches, IsDateString, IsInt, Min, IsDate } from 'class-validator';
+import { IsString, Matches, IsDateString, IsInt, Min, IsDate, IsNotEmpty } from 'class-validator';
 
 export class InsertTemperatureValueReqDto {
     @ApiProperty({
         description: 'HEX 온도 데이터. 4의 배수자리로 입력 필수',
         example: 'FFFE00010003FFFE00010003FFFE00010003FFFE00010003',
     })
+    @IsNotEmpty()
     @IsString()
     @Matches(/^(?:[0-9A-Fa-f]{4})+$/, {
     message: 'temperatures 필드는 4의 배수자리 HEX 단위의 유효한 문자열이어야 합니다.',
@@ -18,6 +19,7 @@ export class InsertTemperatureValueReqDto {
         example: 'A1A123456A',
     })
     @IsString()
+    @IsNotEmpty()
     sereaiNumber: string;
 
     @ApiProperty({
@@ -26,6 +28,7 @@ export class InsertTemperatureValueReqDto {
         example: '2025-10-24 08:00:00',
     })
     @IsDate({ message: 'registeredAt은 yyyy-mm-dd hh:mm:ss 형식이어야 합니다.' })
+    @IsNotEmpty()
     @Transform(({ value }) => new Date(value))
     registeredAt: Date;
 
@@ -36,5 +39,6 @@ export class InsertTemperatureValueReqDto {
     })
     @IsInt()
     @Min(1)
+    @IsNotEmpty()
     interval: number;
 }

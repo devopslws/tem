@@ -1,6 +1,7 @@
-import { IsString, Length, IsDate, IsDateString } from 'class-validator';
+import { IsString, Length, IsDate, IsDateString, IsNotEmpty } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
+
 
 export class GetAverageTemperatureByDurationReqDto {
   @ApiProperty({
@@ -9,6 +10,7 @@ export class GetAverageTemperatureByDurationReqDto {
   })
   @IsString()
   @Length(8, 20, { message: 'deviceSerial은 8~20자여야 합니다.' })
+  @IsNotEmpty()
   deviceSerial: string;
 
   @ApiProperty({
@@ -17,6 +19,7 @@ export class GetAverageTemperatureByDurationReqDto {
   })
   @IsDate({ message: 'from은 유효한 날짜 문자열이어야 합니다.' })
   @Transform(({ value }) => new Date(value))
+  @IsNotEmpty()
   from: Date;
     
   @ApiProperty({
@@ -25,5 +28,7 @@ export class GetAverageTemperatureByDurationReqDto {
   })
   @IsDate({ message: 'to는 유효한 날짜 문자열이어야 합니다.' })
   @Transform(({ value }) => new Date(value))
+  @IsNotEmpty()
+  //@IsFromBeforeTo('from', { message: 'to는 from 이후여야 합니다.' })
   to: Date;
 }

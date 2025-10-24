@@ -40,4 +40,24 @@ export abstract class KnexCommonBuilder {
         const result = await this.knex.raw(rawQuery)
         return result[0][0];
     }
+
+    trans<T>(data: Record<string, any>, schema: Record<keyof T, 'number' | 'string' | 'date'>): T {
+        const result = {} as T;
+
+        for (const key in data) {
+            if (!schema[key as keyof T]) continue;
+
+            const type = schema[key as keyof T];
+            if (type === 'number') result[key as keyof T] = Number(data[key]) as any;
+            else if (type === 'string') result[key as keyof T] = String(data[key]) as any;
+            else if (type === 'date') result[key as keyof T] = new Date(data[key]) as any;
+            else result[key as keyof T] = data[key];
+        }
+
+        return result;
+    }
+
+
+
+    
 }

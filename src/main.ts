@@ -12,6 +12,7 @@ async function bootstrap() {
       transform: true,            
       whitelist: true,
       forbidNonWhitelisted: true,
+      exceptionFactory: (errors) => errors
     }),
   );
 
