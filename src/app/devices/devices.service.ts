@@ -6,6 +6,8 @@ import { RegisterOneResDto } from './model/registerOne.res.dto';
 import { InsertTemperatureValueReqDto } from './model/insertTemperatureValue.req.dto';
 import * as mathCommon from '../commons/mathCommon';
 import { DeviceLogsEntity } from './model/deviceLogs.entity';
+import { GetAverageTemperatureByDurationResDto } from './model/getAverageTemperatureByDuration.res.dto';
+import { GetAverageTemperatureByDurationReqDto } from './model/getAverageTemperatureByDuration.req.dto';
 
 @Injectable()
 export class DevicesService {
@@ -51,12 +53,23 @@ export class DevicesService {
     return null;
   }
 
-  async getAverageTemperature(serialNumber: string) {
+  /** 통계 정보 조회 */
+  async getAverageTemperature(reqDto: GetAverageTemperatureByDurationReqDto): Promise<GetAverageTemperatureByDurationResDto> {
     //음.. 예외처리를 거쳐서 오기는 하는데 이러면 예측이 널뛰는 문제가 있으니 예외 처리는 가급적 service로 옮겨 예측 가능성을
     //올려주자
-    const row = await this.devicesQb.getDeviceRowBySerialNumber(serialNumber)
-    if (!row) {
-      return this.devicesQb.getAverageTemperature(serialNumber);
+    let result = new GetAverageTemperatureByDurationResDto();
+    const row = await this.devicesQb.getDeviceRowBySerialNumber(reqDto.deviceSerial)
+    if (row) {
+      result.id = row.deviceId
+      result.serialNumber = reqDto.deviceSerial;
+      result.averageTemperature = await this.devicesQb.getAverageTemperature({
+        deviceId: row.deviceId,
+        from: reqDto.from,
+        to: reqDto.to
+      });
+      return result
+    } else {
+      throw new BadRequestException(`일치하는 deviceS/N이 없습니다`);
     }
   }
 

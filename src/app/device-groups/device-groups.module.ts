@@ -6,5 +6,6 @@ import { DeviceGroupsQb } from './device-groups.qb';
 @Module({
   controllers: [DeviceGroupsController],
   providers: [DeviceGroupsService, DeviceGroupsQb],
+  exports: [DeviceGroupsQb]
 })
 export class DeviceGroupsModule {}

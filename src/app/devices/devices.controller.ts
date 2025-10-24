@@ -1,7 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { DevicesService } from './devices.service';
 import { RegisterOneReqDto } from './model/registerOne.req.dto';
 import { InsertTemperatureValueReqDto } from './model/insertTemperatureValue.req.dto';
+import { GetAverageTemperatureByDurationReqDto } from './model/getAverageTemperatureByDuration.req.dto';
+import { GetAverageTemperatureByDurationResDto } from './model/getAverageTemperatureByDuration.res.dto';
+
 
 
 @Controller('devices')
@@ -20,8 +23,7 @@ export class DevicesController {
   }
 
   @Get('/getAverageTemperature')
-  getAverageTemperature(@Param('id') deviceCode: string) {
-    //get과 post 모두 object형식으로 통일 시켜주는 커스텀 기능 만들자. 이름은 @ReqDto
-    return this.devicesService.getAverageTemperature(deviceCode);
+  getAverageTemperature(@Query() reqDto:GetAverageTemperatureByDurationReqDto): Promise<GetAverageTemperatureByDurationResDto> {
+    return this.devicesService.getAverageTemperature(reqDto);
   }
 }

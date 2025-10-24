@@ -20,8 +20,8 @@ const runtimeEnv = () => {
   imports: [
     ConfigModule.forRoot({isGlobal:true, load: [runtimeEnv]}), 
     KnexModule,
+    DeviceGroupsModule,
     DevicesModule, 
-    DeviceGroupsModule, 
   ],
   
   providers: [ConfigService],

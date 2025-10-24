@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { KnexCommonBuilder } from '../commons/knexCommon.qb';
 import { DeviceEntity } from './model/device.entity';
 import { DeviceLogsEntity } from './model/deviceLogs.entity';
+import { getAverageTemperatureRtn } from './devices.vo';
 
 @Injectable()
 export class DevicesQb extends KnexCommonBuilder{
@@ -29,14 +30,14 @@ export class DevicesQb extends KnexCommonBuilder{
     return `This action returns all devices`;
   }
 
-  async getAverageTemperature(serialNumber: string) {
-    const result = await this.knex<DeviceLogsEntity>('deviceLog')
-      .select('*',
-        this.knex.raw('AVG(temperature) as avgTemperature')
-      )
-      .where('serialNumber', serialNumber)
+  async getAverageTemperature(prm: {deviceId: number, from: Date, to:Date}):Promise<number> {
+    const result = await this.knex<DeviceLogsEntity, getAverageTemperatureRtn>('deviceLog')
+      .avg({ avgTemperature: 'temperature' })
+      .where('deviceId', prm.deviceId)
+      .andWhereBetween('registeredAt',[prm.from, prm.to])
       .first();
-    return this.checkSingleResult(result, 'deviceId')
+    //값을 검사하면 any 타입이 number로 치환 된다
+    return this.checkSingleResult<number>(result?.avgTemperature, 'avgTemperature');
   }
 
 }
