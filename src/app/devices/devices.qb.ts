@@ -31,9 +31,14 @@ export class DevicesQb extends KnexCommonBuilder{
       return result
   }
 
+  /** TODO: 엄밀히 말하면 실패 case 나와도 continue 하도록 만들어서 안정성을 올려야 하지만
+   * 그러면 또 배치로그 관리 까지 너무 커진다. 이번 과제 영역을 넘어서기 때문에 여기까지
+   */
   async insertTemperatureValue(bulkDao: DeviceLogsEntity[] | DeviceLogsEntity) {
-    //중복 입력을 방지할 수 있을까? 어디서 어디 까지를 중복으로 봐야 할까? 장비코드 + 시간?
+    //중복의 기준: deviceId + 동일 '측정'시간
     const result = await this.knex<DeviceLogsEntity>('temperatureLog').insert(bulkDao)
+    .onConflict(['registeredAt', 'deviceId'])
+    .ignore();
     return result;
   }
 
