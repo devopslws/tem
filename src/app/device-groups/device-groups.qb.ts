@@ -46,7 +46,8 @@ export class DeviceGroupsQb extends KnexCommonBuilder {
     async getAverageStatisticsByDuration (prm: {deviceGroupId: number, from: Date, to: Date}):Promise<getAverageStatisticsByDurationRtn> {
         const from = this.toMySQLDateString(prm.from);
         const to = this.toMySQLDateString(prm.to)
-        const result = await this.knex.raw(`
+        //흠... 통계함수 마다 raw 쓸텐데... 매번 2번씩 꺼내면 너무 불편하고 지저분 한데
+        const result = await this.useKnexRawWithType<getAverageStatisticsByDurationRtn>(`
             SELECT
                 AVG(temperature) AS averageTemperature,
                 MAX(temperature) AS maxTemperature,
@@ -62,7 +63,7 @@ export class DeviceGroupsQb extends KnexCommonBuilder {
                 FROM temperature.temperaturelog
                 WHERE deviceGroupid = ${prm.deviceGroupId}
             AND registeredAt BETWEEN '${from}' AND '${to}';    
-        `)  as getAverageStatisticsByDurationRtn
-        return this.checkSingleResult(result[0][0]);
+        `);
+        return this.checkSingleResult(result);
     }
 }

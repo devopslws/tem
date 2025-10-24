@@ -30,6 +30,14 @@ export abstract class KnexCommonBuilder {
         const hh = String(date.getHours()).padStart(2, '0');
         const mi = String(date.getMinutes()).padStart(2, '0');
         const ss = String(date.getSeconds()).padStart(2, '0');
-  return `${yyyy}-${mm}-${dd} ${hh}:${mi}:${ss}`;
-}
+    return `${yyyy}-${mm}-${dd} ${hh}:${mi}:${ss}`;
+
+    
+    }
+
+    //raw쓰면 중첩 배열의 안쪽에 값이 있다. 
+    protected async useKnexRawWithType<T>(rawQuery: string): Promise<T> {
+        const result = await this.knex.raw(rawQuery)
+        return result[0][0];
+    }
 }
