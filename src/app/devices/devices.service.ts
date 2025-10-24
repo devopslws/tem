@@ -17,33 +17,39 @@ export class DevicesService {
   ) {}
 
   /** 장비 등록 */
-  async registerOne(registerOneReqDto: RegisterOneReqDto) {
+  async registerOne(registerOneReqDto: RegisterOneReqDto): Promise<RegisterOneResDto> {
     let registerOneResDto = new RegisterOneResDto();
 
     if (!await this.deviceGroupsQb.checkIsExistBySerialNumber(registerOneReqDto.deviceGroupSerial)) {
       throw new BadRequestException(`${registerOneReqDto.deviceGroupSerial}는 없는 그룹S/N 입니다`);
     } else {
-      const result = await this.devicesQb.registerOne(registerOneReqDto.serialNumber);
-      if (result.length == 0) {
+      const isExist = await this.devicesQb.checkIsExistBySerialNumber(registerOneReqDto.serialNumber);
+      if (isExist) {
         throw new BadRequestException('이미 등록된 S/N입니다');
       }
       registerOneResDto.deviceGroup = await this.deviceGroupsQb.getDeviceGroupRowBySerialNumber(registerOneReqDto.deviceGroupSerial);
+      await this.devicesQb.registerOne(registerOneReqDto.serialNumber, registerOneResDto.deviceGroup.deviceGroupId);
+      
       Object.assign(registerOneResDto, await this.devicesQb.getDeviceRowBySerialNumber(registerOneReqDto.serialNumber))
     }
-    
     return registerOneResDto;
   }
 
   /** 등록 장비에 온도 데이터 받아서 multiInsert */
   async insertTemperatureValue(insertTemperatureValueReqDto: InsertTemperatureValueReqDto): Promise<null> {
-    const serialNumber = insertTemperatureValueReqDto.sereaiNumber;
+    
     const registeredAt = insertTemperatureValueReqDto.registeredAt;
     const interval = insertTemperatureValueReqDto.interval;
     let bulkDao = new Array<DeviceLogsEntity>();
+    const deviceRow = await this.devicesQb.getDeviceRowBySerialNumber(insertTemperatureValueReqDto.sereaiNumber);
+    if (!deviceRow) {
+      throw new BadRequestException('없는 장비S/N 입니다');
+    }
     const smallIntArr: number[] = mathCommon.hexToSignedInt16(insertTemperatureValueReqDto.temperatures);
     smallIntArr.forEach((element, idx) => {
       const row = new DeviceLogsEntity();
-      row.deviceId = serialNumber;
+      row.deviceId = deviceRow.deviceId;
+      row.deviceGroupId = deviceRow.deviceGroupId
       row.temperature = element;
       row.registeredAt = new Date(registeredAt.getTime() + (interval*(idx) * 1000));
       bulkDao.push(row)

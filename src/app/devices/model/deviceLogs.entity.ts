@@ -1,5 +1,7 @@
 export class DeviceLogsEntity {
-    deviceId: string;
+    deviceId: number;
+    deviceGroupId: number;
     temperature: number;
     registeredAt: Date;
+    createdAt: Date;
 }
