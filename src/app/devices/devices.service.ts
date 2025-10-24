@@ -51,8 +51,13 @@ export class DevicesService {
     return null;
   }
 
-  async getAverageTemperature(deviceCode: string) {
-    return this.devicesQb.getAverageTemperature(deviceCode);
+  async getAverageTemperature(serialNumber: string) {
+    //음.. 예외처리를 거쳐서 오기는 하는데 이러면 예측이 널뛰는 문제가 있으니 예외 처리는 가급적 service로 옮겨 예측 가능성을
+    //올려주자
+    const row = await this.devicesQb.getDeviceRowBySerialNumber(serialNumber)
+    if (!row) {
+      return this.devicesQb.getAverageTemperature(serialNumber);
+    }
   }
 
 }
