@@ -19,7 +19,7 @@ export class GetAverageStatisticsByDurationReqDto {
         description: '조회 시작 날짜 YYYY-MM-DD hh:mm:ss',
         example: '2025-10-01 00:00:00',
     })
-    @IsDate({ message: 'from은 유효한 날짜 어야 합니다.' })
+    @IsDate({ message: 'from은 유효한 날짜 문자열 이어야 합니다.' })
     @Transform(({ value }) => new Date(value))
     @IsNotEmpty()
     from: Date;
@@ -29,7 +29,7 @@ export class GetAverageStatisticsByDurationReqDto {
         example: '2025-10-24 00:00:00',
     })
     @Transform(({ value }) => new Date(value))
-    @IsDate({ message: 'to는 유효한 날짜 문자열이어야 합니다.' })
+    @IsDate({ message: 'to는 유효한 날짜 문자열 이어야 합니다.' })
     @IsNotEmpty()
     @IsAfterFrom('from', 'to는 from보다 같거나 늦은 기간이어야 합니다')
     to: Date;

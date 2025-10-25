@@ -27,7 +27,7 @@ export class InsertTemperatureValueReqDto {
         '첫 번째 온도 측정 시간 yyyy-mm-dd hh:mm:ss',
         example: '2025-10-24 08:00:00',
     })
-    @IsDate({ message: 'registeredAt은 yyyy-mm-dd hh:mm:ss 형식이어야 합니다.' })
+    @IsDate({ message: 'registeredAt은 yyyy-mm-dd hh:mm:ss형식의 날짜 범위 이어야 합니다.' })
     @IsNotEmpty()
     @Transform(({ value }) => new Date(value))
     registeredAt: Date;
