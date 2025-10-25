@@ -21,9 +21,12 @@ describe('device/registerOne', () => {
 });
 
 describe('device/insertTemperatureValue', () => {
-  let correctValue = { temperatures: 'FFFE00010003FFFE00010003FFFE00010003FFFE00010003', sereaiNumber: 'A1A1212356'
-      ,registeredAt: new Date('2025-10-24 08:00:00'), interval: 60
-     };
+  let correctValue = { 
+    temperatures: 'FFFE00010003FFFE00010003FFFE00010003FFFE00010003', 
+    sereaiNumber: 'A1A1212356',
+    registeredAt: new Date('2025-10-24 08:00:00'), 
+    interval: 60
+  };
   
   it('온도가 4의 배수가 아님.', async () => {
     let inCorr = Object.assign({}, correctValue)
@@ -44,8 +47,20 @@ describe('device/insertTemperatureValue', () => {
 });
 
 describe('device/getAverageTemperature', () => {
+  let correctValue = { 
+    deviceSerial : 'A1A123456A',
+    from : new Date('2025-10-23 08:00:00'),
+    to : new Date('2025-10-24 08:00:00'), 
+  };
+
   it('장비 8~2자 이내. 그룹 코드 정상', async () => {
-    const dto = { deviceSerial: 'A1A1212356', from: new Date('2025-10-24 08:00:00'), to:new Date('2025-10-24 08:00:00') };
-    await expect(validateDto(dto, GetAverageTemperatureByDurationReqDto)).resolves.toEqual(dto);
+    const dto = correctValue;
+    await expect(validateDto(correctValue, GetAverageTemperatureByDurationReqDto)).resolves.toEqual(dto);
+  });
+  it('from이 to보다 늦게 들어옴', async () => {
+    let inCorr = Object.assign({}, correctValue)
+    inCorr.from = (new Date('2025-11-23 08:00:00'))
+    const dto = inCorr;
+    await expect(validateDto(dto, GetAverageTemperatureByDurationReqDto)).rejects.toBeInstanceOf(BadRequestException);
   });
 });

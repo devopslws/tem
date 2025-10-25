@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsDate, IsNotEmpty, IsString, Length } from "class-validator";
 import { Transform } from 'class-transformer';
+import { IsAfterFrom } from "../../../configAndGlobalModules/fromToCheck.decorator";
 
 export class GetAverageStatisticsByDurationReqDto {
     @ApiProperty({
@@ -30,5 +31,6 @@ export class GetAverageStatisticsByDurationReqDto {
     @Transform(({ value }) => new Date(value))
     @IsDate({ message: 'to는 유효한 날짜 문자열이어야 합니다.' })
     @IsNotEmpty()
+    @IsAfterFrom('from', 'to는 from보다 같거나 늦은 기간이어야 합니다')
     to: Date;
 }

@@ -1,7 +1,3 @@
-
-
-import { DeviceLogsEntity } from "../devices/model/deviceLogs.entity";
-
 //hex값만 받아서 쓴다
 export function hexToSignedInt16(hexString: string): number[] {
   const result: number[] = [];

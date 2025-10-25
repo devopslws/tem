@@ -1,6 +1,7 @@
 import { IsString, Length, IsDate, IsDateString, IsNotEmpty } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsAfterFrom } from '../../../configAndGlobalModules/fromToCheck.decorator';
 
 
 export class GetAverageTemperatureByDurationReqDto {
@@ -29,6 +30,6 @@ export class GetAverageTemperatureByDurationReqDto {
   @IsDate({ message: 'to는 유효한 날짜 문자열이어야 합니다.' })
   @Transform(({ value }) => new Date(value))
   @IsNotEmpty()
-  //@IsFromBeforeTo('from', { message: 'to는 from 이후여야 합니다.' })
+  @IsAfterFrom('from', 'to는 from보다 같거나 늦은 기간이어야 합니다')
   to: Date;
 }
