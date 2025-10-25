@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
-import { DeviceGroupsService } from './device-groups.service';
+import { DeviceGroupsService } from './deviceGroups.service';
 import { CreateDeviceGroupReqDto } from './model/createDeviceGroup.req.dto';
 import { CreateDeviceGroupResDto } from './model/createDeviceGroup.res.dto';
 import { GetAverageStatisticsByDurationReqDto } from './model/getAverageStatisticsByDuration.req.dto';

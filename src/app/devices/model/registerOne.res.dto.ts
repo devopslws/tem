@@ -1,6 +1,6 @@
 "deviceId"
 import { ApiProperty } from "@nestjs/swagger";
-import { DeviceGroupEntity } from "../../device-groups/model/deviceGroup.entity"
+import { DeviceGroupEntity } from "../../deviceGroups/model/deviceGroup.entity"
 
 export class RegisterOneResDto {
     @ApiProperty({

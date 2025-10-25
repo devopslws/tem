@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { DeviceGroupsQb } from './device-groups.qb';
+import { DeviceGroupsQb } from './deviceGroups.qb';
 import { CreateDeviceGroupResDto } from './model/createDeviceGroup.res.dto';
 import { GetAverageStatisticsByDurationReqDto } from './model/getAverageStatisticsByDuration.req.dto';
 import { GetAverageStatisticsByDurationResDto } from './model/getAverageStatisticsByDuration.res.dto';

@@ -1,5 +1,9 @@
 import 'dotenv/config';
 
+/* 
+  knex 스키마 빌더용 설정 파일 입니다 원래대로 라면 ignore처리 후 별개로 공유하는게 맞지만
+  과제 제출 환경이니 함께 올리겠습니다
+*/
 const knexConfig = {
   development: {
     client: 'mysql2',

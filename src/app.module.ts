@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { DeviceGroupsModule } from './app/device-groups/device-groups.module';
+import { DeviceGroupsModule } from './app/deviceGroups/deviceGroups.module';
 import { DevicesModule } from './app/devices/devices.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { KnexModule } from './configAndGlobalModules/knexModule';

@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { DevicesService } from './devices.service';
 import { DevicesController } from './devices.controller';
 import { DevicesQb } from './devices.qb';
-import { DeviceGroupsModule } from '../device-groups/device-groups.module';
+import { DeviceGroupsModule } from '../deviceGroups/deviceGroups.module';
 
 @Module({
   imports: [DeviceGroupsModule],

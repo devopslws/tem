@@ -1,6 +1,6 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { DevicesQb } from './devices.qb';
-import { DeviceGroupsQb } from '../device-groups/device-groups.qb';
+import { DeviceGroupsQb } from '../deviceGroups/deviceGroups.qb';
 import { RegisterOneReqDto } from './model/registerOne.req.dto';
 import { RegisterOneResDto } from './model/registerOne.res.dto';
 import { InsertTemperatureValueReqDto } from './model/insertTemperatureValue.req.dto';
