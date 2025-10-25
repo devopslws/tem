@@ -21,6 +21,7 @@ export abstract class KnexCommonBuilder {
         return (result !== undefined && result !== null) ? true: false;
     }
 
+    //date or date -> dateString
     protected toMySQLDateString(value: Date | string): string {
         const date = typeof value === 'string' ? new Date(value) : value;
 
@@ -36,8 +37,8 @@ export abstract class KnexCommonBuilder {
     }
 
     //raw쓰면 중첩 배열의 안쪽에 값이 있다. 
-    protected async useKnexRawWithType<T>(rawQuery: string): Promise<T> {
-        const result = await this.knex.raw(rawQuery)
+    protected async useKnexRawWithType<T>(rawQuery: string, param?: any): Promise<T> {
+        const result = await this.knex.raw(rawQuery, param? param: [])
         return result[0][0];
     }
 

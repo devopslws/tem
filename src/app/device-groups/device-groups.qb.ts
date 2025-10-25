@@ -44,8 +44,8 @@ export class DeviceGroupsQb extends KnexCommonBuilder {
 
     //obj 쓰는 이유: 변수 셋 이상부터는 순서 헷갈리면 기대값과 역전된 결과가 나옴(특히 날짜)
     async getAverageStatisticsByDuration (prm: {deviceGroupId: number, from: Date, to: Date}):Promise<getAverageStatisticsByDurationRtn> {
-        const from = this.toMySQLDateString(prm.from);
-        const to = this.toMySQLDateString(prm.to)
+        //const from = this.toMySQLDateString(prm.from);
+        //const to = this.toMySQLDateString(prm.to)
 
         const result = await this.useKnexRawWithType<getAverageStatisticsByDurationRtn>(`
             SELECT
@@ -61,9 +61,9 @@ export class DeviceGroupsQb extends KnexCommonBuilder {
                     ) - 273.15
                 ) AS mkt
                 FROM temperature.temperaturelog
-                WHERE deviceGroupid = ${prm.deviceGroupId}
-            AND registeredAt BETWEEN '${from}' AND '${to}';    
-        `);
+                WHERE deviceGroupid = :deviceGroupId
+            AND registeredAt BETWEEN :from AND :to;    
+        `, prm);
         return this.checkSingleResult<getAverageStatisticsByDurationRtn>(result);
     }
 }
