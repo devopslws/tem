@@ -3,18 +3,21 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { ResponseTransformInterceptor } from './configAndGlobalModules/ResponseTransformInterceptor';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { TrimStringsPipe } from './configAndGlobalModules/trimPipe';
 
 async function bootstrap() {
   
   const app = await NestFactory.create(AppModule);
   app.useGlobalInterceptors(new ResponseTransformInterceptor());
-  app.useGlobalPipes(new ValidationPipe({
+  app.useGlobalPipes(
+    new TrimStringsPipe(),
+    new ValidationPipe({
       transform: true, //str -> 타입 변환         
       whitelist: true, //dto에 없는 추가변수 무시
       forbidNonWhitelisted: true, //dto에 없는 추가변수 err
     }),
+    
   );
-
   const config = new DocumentBuilder()
     .setTitle('temperatureApi')
     .setDescription('온도 수집 및 통계조회Api')
@@ -25,7 +28,5 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
   console.log(' swaggerOn >>')
   await app.listen(process.env.PORT ?? 3000);
-  
-
 }
 bootstrap();
